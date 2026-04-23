@@ -1,5 +1,7 @@
 #include <iostream>
-#include <string>
+#include <fstream>
+#include <queue>
+#include <vector>
 
 using namespace std;
 
@@ -10,87 +12,83 @@ struct TreeNode {
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
-typedef TreeNode* Pnode;
-
-string treeToString(Pnode root) {
-    if (root == nullptr) {
-        return "";
+vector<int> getLevelNodes(TreeNode* root, int N) {
+    vector<int> result;
+    if (!root || N < 1) return result;
+    
+    queue<pair<TreeNode*, int>> q;
+    q.push({root, 1});
+    
+    while (!q.empty()) {
+        TreeNode* current = q.front().first;
+        int level = q.front().second;
+        q.pop();
+        
+        if (level == N) {
+            result.push_back(current->val);
+        }
+        
+        if (current->left) {
+            q.push({current->left, level + 1});
+        }
+        if (current->right) {
+            q.push({current->right, level + 1});
+        }
     }
     
-    string leftStr = treeToString(root->left);
-    string rightStr = treeToString(root->right);
-    
-    if (!leftStr.empty() && !rightStr.empty()) {
-        return "(" + leftStr + ")" + to_string(root->val) + "(" + rightStr + ")";
-    }
-    else if (!leftStr.empty()) {
-        return "(" + leftStr + ")" + to_string(root->val);
-    }
-    else if (!rightStr.empty()) {
-        return to_string(root->val) + "(" + rightStr + ")";
-    }
-    else {
-        return to_string(root->val);
-    }
+    return result;
 }
 
-void del(Pnode &r, Pnode &q) {
-    if (r->left) {
-        del(r->left, q);
-    }
-    else {
-        q->val = r->val;
-        q = r;
-        r = r->right;
-    }
-}
-
-void deleteNode(Pnode &root, int K) {
+void printLevels(TreeNode* root, const string& filename) {
     if (!root) return;
     
-    if (K < root->val) {
-        deleteNode(root->left, K);
-    }
-    else if (K > root->val) {
-        deleteNode(root->right, K);
-    }
-    else {
-        Pnode q = root;
+    ofstream out(filename);
+    
+    queue<TreeNode*> q;
+    q.push(root);
+    
+    while (!q.empty()) {
+        int levelSize = q.size();
         
-        if (!root->right) {
-            root = root->left;
-        }
-        else if (!root->left) {
-            root = root->right;
-        }
-        else {
-            del(root->right, q);
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode* current = q.front();
+            q.pop();
+            
+            out << current->val;
+            
+            if (i < levelSize - 1) {
+                out << " ";
+            }
+            
+            if (current->left) {
+                q.push(current->left);
+            }
+            if (current->right) {
+                q.push(current->right);
+            }
         }
         
-        delete q;
+        if (!q.empty()) {
+            out << endl;
+        }
     }
+    
+    out.close();
 }
 
 int main() {
-    Pnode root = new TreeNode(35);
-    root->left = new TreeNode(28);
-    root->right = new TreeNode(86);
-    root->right->left = new TreeNode(81);
-    root->right->right = new TreeNode(90);
-    root->right->left->left = new TreeNode(41);
-    root->right->left->left->right = new TreeNode(51);
-    root->right->left->left->right->right = new TreeNode(55);
+    TreeNode* root = new TreeNode(75);
+    root->left = new TreeNode(67);
+    root->right = new TreeNode(28);
+    root->left->left = new TreeNode(94);
+    root->left->right = new TreeNode(87);
+    root->right->left = new TreeNode(80);
+    root->right->right = new TreeNode(1);
+    root->left->left->left = new TreeNode(95);
+    root->left->right->left = new TreeNode(48);
+    root->left->right->right = new TreeNode(50);
     
-    cout << "Исходное: " << treeToString(root) << endl;
-    
-    deleteNode(root, 51);
-    cout << "После 51: " << treeToString(root) << endl;
-    
-    deleteNode(root, 86);
-    cout << "После 86: " << treeToString(root) << endl;
-    
-    deleteNode(root, 35);
-    cout << "После 35: " << treeToString(root) << endl;
+    printLevels(root, "kc49e.tst");
     
     return 0;
 }
