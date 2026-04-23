@@ -1,6 +1,5 @@
 #include <iostream>
 #include <queue>
-#include <vector>
 
 using namespace std;
 
@@ -10,33 +9,6 @@ struct TreeNode {
     TreeNode* right;
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
 };
-
-vector<int> getLevelNodes(TreeNode* root, int N) {
-    vector<int> result;
-    if (!root || N < 1) return result;
-    
-    queue<pair<TreeNode*, int>> q;
-    q.push({root, 1});
-    
-    while (!q.empty()) {
-        TreeNode* current = q.front().first;
-        int level = q.front().second;
-        q.pop();
-        
-        if (level == N) {
-            result.push_back(current->val);
-        }
-        
-        if (current->left) {
-            q.push({current->left, level + 1});
-        }
-        if (current->right) {
-            q.push({current->right, level + 1});
-        }
-    }
-    
-    return result;
-}
 
 void printLevels(TreeNode* root) {
     if (!root) return;
@@ -78,10 +50,9 @@ int main() {
     root->left->left = new TreeNode(94);
     root->left->right = new TreeNode(87);
     root->right->left = new TreeNode(80);
-    root->right->right = new TreeNode(1);
-    root->left->left->left = new TreeNode(95);
-    root->left->right->left = new TreeNode(48);
-    root->left->right->right = new TreeNode(50);
+    root->right->right = new TreeNode(95);
+    root->left->left->left = new TreeNode(48);
+    root->left->left->right = new TreeNode(50);
     
     printLevels(root);
     
