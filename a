@@ -35,13 +35,13 @@ string treeToString(Pnode root) {
 }
 
 void del(Pnode &r, Pnode &q) {
-    if (r->right) {
-        del(r->right, q);
+    if (r->left) {
+        del(r->left, q);
     }
     else {
         q->val = r->val;
         q = r;
-        r = r->left;
+        r = r->right;
     }
 }
 
@@ -81,18 +81,16 @@ int main() {
     root->right->left->left->right = new TreeNode(51);
     root->right->left->left->right->right = new TreeNode(55);
     
-    cout << "Исходное дерево: " << treeToString(root) << endl;
-    cout << endl;
+    cout << "Исходное: " << treeToString(root) << endl;
     
-    int toDelete[] = {51, 86, 35};
+    deleteNode(root, 51);
+    cout << "После 51: " << treeToString(root) << endl;
     
-    for (int i = 0; i < 3; i++) {
-        int K = toDelete[i];
-        cout << "Удаляем " << K << ":" << endl;
-        deleteNode(root, K);
-        cout << treeToString(root) << endl;
-        cout << endl;
-    }
+    deleteNode(root, 86);
+    cout << "После 86: " << treeToString(root) << endl;
+    
+    deleteNode(root, 35);
+    cout << "После 35: " << treeToString(root) << endl;
     
     return 0;
 }
