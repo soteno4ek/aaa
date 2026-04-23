@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <queue>
 #include <vector>
 
@@ -39,10 +38,8 @@ vector<int> getLevelNodes(TreeNode* root, int N) {
     return result;
 }
 
-void printLevels(TreeNode* root, const string& filename) {
+void printLevels(TreeNode* root) {
     if (!root) return;
-    
-    ofstream out(filename);
     
     queue<TreeNode*> q;
     q.push(root);
@@ -54,10 +51,10 @@ void printLevels(TreeNode* root, const string& filename) {
             TreeNode* current = q.front();
             q.pop();
             
-            out << current->val;
+            cout << current->val;
             
             if (i < levelSize - 1) {
-                out << " ";
+                cout << " ";
             }
             
             if (current->left) {
@@ -69,11 +66,9 @@ void printLevels(TreeNode* root, const string& filename) {
         }
         
         if (!q.empty()) {
-            out << endl;
+            cout << endl;
         }
     }
-    
-    out.close();
 }
 
 int main() {
@@ -88,7 +83,7 @@ int main() {
     root->left->right->left = new TreeNode(48);
     root->left->right->right = new TreeNode(50);
     
-    printLevels(root, "kc49e.tst");
+    printLevels(root);
     
     return 0;
 }
