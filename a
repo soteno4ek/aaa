@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -72,33 +71,23 @@ void deleteNode(Pnode &root, int K) {
     }
 }
 
-Pnode insert(Pnode root, int val) {
-    if (!root) {
-        return new TreeNode(val);
-    }
-    if (val < root->val) {
-        root->left = insert(root->left, val);
-    }
-    else if (val > root->val) {
-        root->right = insert(root->right, val);
-    }
-    return root;
-}
-
 int main() {
-    vector<int> values = {35, 28, 86, 81, 90, 41, 51, 55};
-    
-    Pnode root = nullptr;
-    for (int val : values) {
-        root = insert(root, val);
-    }
+    Pnode root = new TreeNode(35);
+    root->left = new TreeNode(28);
+    root->right = new TreeNode(86);
+    root->right->left = new TreeNode(81);
+    root->right->right = new TreeNode(90);
+    root->right->left->left = new TreeNode(41);
+    root->right->left->left->right = new TreeNode(51);
+    root->right->left->left->right->right = new TreeNode(55);
     
     cout << "Исходное дерево: " << treeToString(root) << endl;
     cout << endl;
     
-    vector<int> toDelete = {51, 86, 35};
+    int toDelete[] = {51, 86, 35};
     
-    for (int K : toDelete) {
+    for (int i = 0; i < 3; i++) {
+        int K = toDelete[i];
         cout << "Удаляем " << K << ":" << endl;
         deleteNode(root, K);
         cout << treeToString(root) << endl;
