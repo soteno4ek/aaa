@@ -1,0 +1,109 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+typedef TreeNode* Pnode;
+
+string treeToString(Pnode root) {
+    if (root == nullptr) {
+        return "";
+    }
+    
+    string leftStr = treeToString(root->left);
+    string rightStr = treeToString(root->right);
+    
+    if (!leftStr.empty() && !rightStr.empty()) {
+        return "(" + leftStr + ")" + to_string(root->val) + "(" + rightStr + ")";
+    }
+    else if (!leftStr.empty()) {
+        return "(" + leftStr + ")" + to_string(root->val);
+    }
+    else if (!rightStr.empty()) {
+        return to_string(root->val) + "(" + rightStr + ")";
+    }
+    else {
+        return to_string(root->val);
+    }
+}
+
+void del(Pnode &r, Pnode &q) {
+    if (r->right) {
+        del(r->right, q);
+    }
+    else {
+        q->val = r->val;
+        q = r;
+        r = r->left;
+    }
+}
+
+void deleteNode(Pnode &root, int K) {
+    if (!root) return;
+    
+    if (K < root->val) {
+        deleteNode(root->left, K);
+    }
+    else if (K > root->val) {
+        deleteNode(root->right, K);
+    }
+    else {
+        Pnode q = root;
+        
+        if (!root->right) {
+            root = root->left;
+        }
+        else if (!root->left) {
+            root = root->right;
+        }
+        else {
+            del(root->right, q);
+        }
+        
+        delete q;
+    }
+}
+
+Pnode insert(Pnode root, int val) {
+    if (!root) {
+        return new TreeNode(val);
+    }
+    if (val < root->val) {
+        root->left = insert(root->left, val);
+    }
+    else if (val > root->val) {
+        root->right = insert(root->right, val);
+    }
+    return root;
+}
+
+int main() {
+    vector<int> values = {35, 28, 86, 81, 90, 41, 51, 55};
+    
+    Pnode root = nullptr;
+    for (int val : values) {
+        root = insert(root, val);
+    }
+    
+    cout << "Исходное дерево: " << treeToString(root) << endl;
+    cout << endl;
+    
+    vector<int> toDelete = {51, 86, 35};
+    
+    for (int K : toDelete) {
+        cout << "Удаляем " << K << ":" << endl;
+        deleteNode(root, K);
+        cout << treeToString(root) << endl;
+        cout << endl;
+    }
+    
+    return 0;
+}
